@@ -1,0 +1,234 @@
+
+// use("MediaDB"); // always we must run a DB
+// show("dbs"); // show the databases 
+// db.dropDatabase(); drop the current database, drop all collections
+
+use("MediaDB")
+
+db.createCollection("media");
+// db.media.drop() // to drop a collections
+// show("collections"); // show the collections created in teh current DB
+
+
+// db.media.insertOne({"key": value, ...}); // Insert one document in media collection
+// db.media.insertMany([{"key": value, ...}, {"key": value, ...}, {"key": value, ...}]); // Insert many documents in media collection.
+// the "_id" is created automatically if we don't specify. this follow autoincrease
+db.media.insertOne(
+    {
+        "_id": ObjectId("5349b4ddd2781d08c09890f3"),
+        "Type": "CD", 
+        "Artist": "The Beatles",
+        "Title": "Help!",
+        "Genre": "Rock", 
+        "ReleaseDate": "1965", 
+        "Tracklist": [
+            {
+                "Track1": "1", "Title": "Help!"},
+                {"Track2": "2", "Title": "you've got to hide your love away"}, 
+                {"Track3": "3", "Title": "Another Girl"}]})
+
+db.media.insertMany([{
+    "Type": "CD",
+    "Artist": "Nirvana",
+    "Title": "Nevermind",
+    "Genre": "Grunge",
+    "Releasedate": "1991.09.24",
+    "Tracklist": [{"Track": "1","Title": "Smells Like Teen Spirit", 
+    "Length": "5:02"},
+    {"Track": "2", "Title": "In Bloom", "Length": "4:15"}]},
+
+    {"type": "Book",
+    "Title": "Definitive Guide to MongoDB: A complete guide to dealing with Big Data using MongoDB 3rd ed., The", 
+    "ISBN": "978-1-4842-1183-0", 
+    "Publisher": "Apress", 
+    "Author": ["Hows, David", "Plugge, Eelco", "Membrey, Peter","Hawkins, Tim"]}]);
+
+db.media.find(); // show all documents in media
+
+db.media.find().pretty(); // show all documents in media but a right format
+
+db.media.find({"Type":"CD"}) // find the documents where Type is "CD"
+
+db.media.find({"Title":{$regex:/^d.*/i}}) // find the documents that begin with d. i refer ignorecase
+
+db.media.find({"Title":{$regex:/(?:^d|^n).*/i}}) // find the documents that begin with d or n, aren't grouped
+
+db.media.find({"Title":{$regex:/(?:^d|^n).*/, $options: 'i'}}) // The same above
+
+db.media.find({"Title":{$not : {$regex:/^d.*/, $options: 'i'}}}) // find the documents that not contain begin with d
+
+db.media.getIndexes() // Returns an array that holds a list of documents that identify and describe the existing indexes on the collection, including hidden indexes
+// Hidden indexes are not visible to the query planner and cannot be used to support a query.
+
+
+// WE CREATE A NEW COLLECTION
+
+db.createCollection("restaurants");
+
+db.restaurants.insertOne({
+    "name_restaurant": "Kimono", 
+    "loc": { "type": "Point", "coordinates": [ 52.370451, 5.217497]}});
+
+db.createCollection("streets");
+
+db.streets.insertOne( 
+    {
+        "name_street": "Westblaak", 
+        "loc": { 
+            "type": "LineString", 
+            "coordinates": [ [52.36881,4.890286],[52.368762,4.890021] ] 
+            } 
+    } 
+    );
+
+db.createCollection("stores");
+
+db.stores.insertOne( 
+    {"name_store": "SuperMall", 
+    "loc": { 
+        "type": "Polygon",
+        "coordinates": [ 
+            [[52.146917,5.374337], 
+            [52.146966,5.375471],
+            [52.146722,5.375085],
+            [52.146744,5.37437], 
+            [52.146917,5.374337]] 
+            ]
+        }
+    }
+    );
+db.restaurants.insertOne(
+    {
+        "name_restaurant": "Shabu Shabu",
+         "loc": { 
+             "type": "MultiPoint",
+             "coordinates": [52.1487441, 5.3873406], [52.3569665,4.890517] 
+             }
+            }
+        
+        );
+
+db.restaurants.createIndex({"loc": "2dsphere" } );
+
+db.restaurants.drop();
+db.stores.drop();
+db.streets.drop();
+
+// CREATE A COLLECTION CALLED restaurants
+db.restaurants.insertMany( [
+    {name: "Kimono", loc: { type: "Point", coordinates: [ 52.370451, 5.217497] } }, 
+    {name: "Shabu Shabu", loc: { type: "Point", coordinates: [51.915288,4.472786] } }, 
+    {name: "Tokyo Cafe", loc: { type: "Point", coordinates: [52.368736, 4.890530] } } 
+    ]
+    );
+
+db.restaurants.createIndex({"loc": "2dsphere"});
+
+db.restaurants.find(
+    {
+        "loc":{
+            "$near":{
+                "$geometry": {"type": "Point", "coordinates":[51.88433, 5.513629]},
+                "$maxDistance": 80000}
+                }
+        }
+    );
+
+db.restaurants.find( 
+    { 
+        loc: { $geoWithin : { 
+            $box : [[52.368549,4.890238],[52.368849,4.89094]]
+             } 
+        }
+    });
+
+db.restaurants.find( 
+    { 
+        loc : { $geoWithin :
+        { $geometry :{ 
+            type : "Polygon" , 
+            coordinates : [ 
+                [ [52.368739,4.890203], 
+                [52.368872,4.890477], 
+                [52.368726,4.890793],
+                [52.368608,4.89049], 
+                [52.368739,4.890203]] 
+            ]
+        }
+    }
+}});
+
+// CHAPTER 4 - WORKING WITH DATA
+
+use("library"); // in shell use library db
+show("dbs");
+show("collections");
+
+// Inserting Data into Collections
+
+document = (
+    {"Type": "Book", 
+    "Title" : "Definitive Guide to MongoDB 3rd ed., The",
+    "ISBN" : "978-1-4842-1183-0", 
+    "Publisher" : "Apress", 
+    "Author" : ["Hows, David", "Plugge,Eelco", "Membrey, Peter", "Hawkins, Tim"] } )
+
+db.createCollection('media');
+db.media.insertOne(document);
+
+// The same above
+
+db.media.insertOne({"Type": "Book", 
+    "Title" : "Definitive Guide to MongoDB 3rd ed., The",
+    "ISBN" : "978-1-4842-1183-0", 
+    "Publisher" : "Apress", 
+    "Author" : ["Hows, David", "Plugge,Eelco", "Membrey, Peter", "Hawkins, Tim"] });
+
+db.media.insertOne(
+    { "Type" : "CD",
+    "Artist" : "Nirvana",
+    "Title" : "Nevermind",
+    "Tracklist" : [
+        {"Track" : "1",
+        "Title" : "Smells Like Teen Spirit", 
+        "Length" : "5:02"},
+        {"Track" : "2",
+        "Title" : "In Bloom",
+        "Length" : "4:15"}
+        ]
+    })
+);
+
+// Queries
+
+db.media.find()); // show all documents in media collections
+
+db.media.find({"Artist":"Nirvana"}) // show Artist Nirvana
+
+db.media.find({"Artist":"Nirvana"}, {"Title":1}); // return the only the title of artist equal Nirvana
+
+db.media.find({"Artist":"Nirvana"}, {"Type":0}); // return the any features except Type of artist equal Nirvana.
+
+db.media.find({"Tracklist.Title":"In Bloom"}) // Search documents that the Title is In Boom.
+
+db.media.find().sort( { Title: 1 }) // sort by Title
+
+db.media.find().limit(10) // the 10 max documents
+
+db.media.find().skip( 20 ) // Skipping 20 documents in your media collection
+
+db.media.find().sort ( { Title : -1 } ).limit ( 10 ).skip ( 20 ) // 
+
+db.createCollection("audit", {capped:true, size:20480}) // To create a capped collection named audit with a maximum size of 20480 bytes.
+
+db.audit.find().sort( { $natural: -1 } ).limit ( 10 ) // To find the ten most recent entries from your capped collection that lists failed login attempts.
+
+db.stats() // stats for db
+
+db.media.stats() // stats for collections
+
+// Using the Aggregation Commands
+
+
+
+

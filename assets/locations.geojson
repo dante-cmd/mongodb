@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "sections": "La Tienda.pe" }, "geometry": { "type": "Point", "coordinates": [ -77.039210646951332, -12.053500537525748 ] } },
+{ "type": "Feature", "properties": { "sections": "Cibertec" }, "geometry": { "type": "Point", "coordinates": [ -77.04093798943174, -12.054056628721154 ] } },
+{ "type": "Feature", "properties": { "sections": "Compu Plaza" }, "geometry": { "type": "Point", "coordinates": [ -77.03771933884714, -12.054738625783504 ] } },
+{ "type": "Feature", "properties": { "sections": "Real Plaza" }, "geometry": { "type": "Point", "coordinates": [ -77.037139981588695, -12.056900020448442 ] } },
+{ "type": "Feature", "properties": { "sections": "Museo de Arte de Lima" }, "geometry": { "type": "Point", "coordinates": [ -77.036624997422066, -12.060236508102024 ] } },
+{ "type": "Feature", "properties": { "sections": "Universidad Nacional Mayor de San Marcos" }, "geometry": { "type": "Point", "coordinates": [ -77.078855186960539, -12.060538798757241 ] } }
+]
+}

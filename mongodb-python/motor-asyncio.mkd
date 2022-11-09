@@ -1,0 +1,10 @@
+# MongoDB Tutorial - Motor Asyncio
+
+## Intallation  
+
+* `pip install motor`
+
+This tutorial assumes that a MongoDB instance is running on the default host and port. Assuming you have downloaded and installed MongoDB, you can start it like so:
+* open terminal `powershell`, `cmd`, or any other and write `mongod` 
+
+or with a `container` of `Docker`
